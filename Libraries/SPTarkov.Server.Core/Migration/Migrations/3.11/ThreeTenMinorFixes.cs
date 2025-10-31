@@ -13,7 +13,7 @@ public class ThreeTenMinorFixes : AbstractProfileMigration
 {
     public override string FromVersion
     {
-        get { return "~3.10"; }
+        get { return new("~3.10"; }
     }
 
     public override string ToVersion

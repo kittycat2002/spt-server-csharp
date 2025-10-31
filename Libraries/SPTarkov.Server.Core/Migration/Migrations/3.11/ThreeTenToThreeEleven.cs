@@ -19,12 +19,12 @@ public class ThreeTenToThreeEleven(
 {
     private List<string> _oldSuiteData = [];
 
-    public override string FromVersion
+    public string FromVersion
     {
         get { return "~3.10"; }
     }
 
-    public override string ToVersion
+    public string ToVersion
     {
         get { return "3.11"; }
     }

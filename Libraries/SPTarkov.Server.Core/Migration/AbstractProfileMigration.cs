@@ -8,9 +8,6 @@ public abstract class AbstractProfileMigration : IProfileMigration
     public abstract string MigrationName { get; }
     public virtual IEnumerable<Type> PrerequisiteMigrations { get; } = [];
 
-    public virtual string FromVersion { get; }
-    public virtual string ToVersion { get; }
-
     public abstract bool CanMigrate(JsonObject profile, IEnumerable<IProfileMigration> previouslyRanMigrations);
 
     public virtual JsonObject? Migrate(JsonObject profile)

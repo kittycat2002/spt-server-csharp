@@ -11,14 +11,9 @@ namespace SPTarkov.Server.Core.Migration.Migrations;
 [Injectable]
 public class HideoutSeed : AbstractProfileMigration
 {
-    public override string FromVersion
+    public string FromVersion
     {
         get { return "~3.10"; }
-    }
-
-    public override string ToVersion
-    {
-        get { return "3.11"; }
     }
 
     public override string MigrationName
