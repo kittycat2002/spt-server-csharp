@@ -10,12 +10,12 @@ using SPTarkov.Server.Web;
 using Range = SemanticVersioning.Range;
 using Version = SemanticVersioning.Version;
 
-namespace TestMod;
+namespace TestMod2;
 
-public record TestModMetadata : AbstractModMetadata, IModWebMetadata
+public record TestMod2Metadata : AbstractModMetadata, IModWebMetadata
 {
-    public override string ModGuid { get; init; } = "com.sp-tarkov.test-mod";
-    public override string Name { get; init; } = "test-mod";
+    public override string ModGuid { get; init; } = "com.sp-tarkov.test-mod2";
+    public override string Name { get; init; } = "test-mod2";
     public override string Author { get; init; } = "SPTarkov";
     public override List<string>? Contributors { get; init; }
     public override Version Version { get; init; } = new("1.0.0");
@@ -28,11 +28,11 @@ public record TestModMetadata : AbstractModMetadata, IModWebMetadata
 }
 
 [Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
-public class TestMod(ISptLogger<TestMod> logger, IEnumerable<IRuntimePatch> patches) : IOnLoad
+public class TestMod2(ISptLogger<TestMod2> logger, IEnumerable<IRuntimePatch> patches) : IOnLoad
 {
     public async Task OnLoad()
     {
-        logger.Info("Test mod loading!");
+        logger.Info("Test mod 2 loading!");
         await Task.CompletedTask;
     }
 }

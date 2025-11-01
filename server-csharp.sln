@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ceciler.JsonExtensionData",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Server.Web", "Libraries\SPTarkov.Server.Web\SPTarkov.Server.Web.csproj", "{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMod2", "Testing\TestMod2\TestMod2.csproj", "{654F884B-43F7-4B0A-911C-EC5843F8924C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{654F884B-43F7-4B0A-911C-EC5843F8924C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{654F884B-43F7-4B0A-911C-EC5843F8924C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{654F884B-43F7-4B0A-911C-EC5843F8924C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{654F884B-43F7-4B0A-911C-EC5843F8924C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -130,6 +136,7 @@ Global
 		{755E473C-14F2-40BC-9377-2FAB11CA91DC} = {07B50C44-6D38-474E-87AF-68672D241EEB}
 		{5D09182A-B0B3-406C-AE88-EE0929F9260C} = {9E41CD5A-271C-4294-AAF9-8EB379311416}
 		{BB1EB56E-9D40-8497-5A6D-B2E35E83FA89} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
+		{654F884B-43F7-4B0A-911C-EC5843F8924C} = {07B50C44-6D38-474E-87AF-68672D241EEB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6F730FC0-94A8-40B8-8E0E-5D6558E8422A}
