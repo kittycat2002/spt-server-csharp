@@ -9,7 +9,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 public record Trader
 {
     [JsonPropertyName("assort")]
-    public required TraderAssort Assort { get; set; }
+    public TraderAssort? Assort { get; set; }
 
     [JsonPropertyName("base")]
     public required TraderBase Base { get; init; }

@@ -39,7 +39,7 @@ public class TraderAssortHelper(
     /// <param name="traderId">traders id</param>
     /// <param name="showLockedAssorts">Should assorts player hasn't unlocked be returned - default false</param>
     /// <returns>a traders' assorts</returns>
-    public TraderAssort GetAssort(MongoId sessionId, MongoId traderId, bool showLockedAssorts = false)
+    public TraderAssort? GetAssort(MongoId sessionId, MongoId traderId, bool showLockedAssorts = false)
     {
         var traderClone = cloner.Clone(databaseService.GetTrader(traderId));
         var fullProfile = profileHelper.GetFullProfile(sessionId);
@@ -48,6 +48,12 @@ public class TraderAssortHelper(
         if (traderId == Traders.FENCE)
         {
             return fenceService.GetFenceAssorts(pmcProfile);
+        }
+
+        // Some traders can have null as an assort, return early because of this.
+        if (traderClone?.Assort is null)
+        {
+            return traderClone?.Assort;
         }
 
         // Strip assorts player should not see yet

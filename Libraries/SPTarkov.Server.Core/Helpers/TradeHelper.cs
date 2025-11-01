@@ -174,7 +174,7 @@ public class TradeHelper(
                 };
 
                 // Get all trader assort items
-                var traderItems = traderAssortHelper.GetAssort(sessionID, buyRequestData.TransactionId).Items;
+                var traderItems = traderAssortHelper.GetAssort(sessionID, buyRequestData.TransactionId)?.Items ?? [];
 
                 // Get item + children for purchase
                 var relevantItems = traderItems.GetItemWithChildren(buyRequestData.ItemId);

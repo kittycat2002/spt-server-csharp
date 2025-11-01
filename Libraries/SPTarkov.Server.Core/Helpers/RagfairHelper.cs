@@ -97,7 +97,7 @@ public class RagfairHelper(
         return result;
     }
 
-    public Dictionary<MongoId, TraderAssort> GetDisplayableAssorts(MongoId sessionId, bool showLockedAssorts = true)
+    public Dictionary<MongoId, TraderAssort?> GetDisplayableAssorts(MongoId sessionId, bool showLockedAssorts = true)
     {
         var traders = databaseService.GetTraders();
 

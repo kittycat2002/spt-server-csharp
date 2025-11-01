@@ -188,7 +188,7 @@ public class TraderController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="traderId"></param>
     /// <returns></returns>
-    public TraderAssort GetAssort(MongoId sessionId, MongoId traderId)
+    public TraderAssort? GetAssort(MongoId sessionId, MongoId traderId)
     {
         return traderAssortHelper.GetAssort(sessionId, traderId);
     }

@@ -222,7 +222,7 @@ public class RagfairOfferHelper(
     public List<RagfairOffer> GetOffersForBuild(
         SearchRequestData searchRequest,
         HashSet<MongoId> itemsToAdd,
-        Dictionary<MongoId, TraderAssort> traderAssorts,
+        Dictionary<MongoId, TraderAssort?> traderAssorts,
         PmcData pmcData
     )
     {
@@ -360,7 +360,7 @@ public class RagfairOfferHelper(
     protected bool IsDisplayableOffer(
         SearchRequestData searchRequest,
         HashSet<MongoId> itemsToAdd,
-        Dictionary<MongoId, TraderAssort> traderAssorts,
+        Dictionary<MongoId, TraderAssort?> traderAssorts,
         RagfairOffer offer,
         Item offerRootItem,
         PmcData pmcProfile,
@@ -428,6 +428,12 @@ public class RagfairOfferHelper(
                 return false;
             }
 
+            // Trader does not have any searchable assort
+            if (assort is null)
+            {
+                return false;
+            }
+
             if (!assort.Items.Any(item => item.Id == offer.Root))
             // skip (quest) locked items
             {
@@ -487,7 +493,7 @@ public class RagfairOfferHelper(
     /// <param name="offer">Offer to check is quest locked</param>
     /// <param name="traderAssorts">all trader assorts for player</param>
     /// <returns>true if quest locked</returns>
-    public bool TraderOfferItemQuestLocked(RagfairOffer offer, Dictionary<MongoId, TraderAssort> traderAssorts)
+    public bool TraderOfferItemQuestLocked(RagfairOffer offer, Dictionary<MongoId, TraderAssort?> traderAssorts)
     {
         var itemIds = offer.Items.Select(x => x.Id).ToHashSet();
         //foreach (var item in offer.Items)
@@ -509,7 +515,8 @@ public class RagfairOfferHelper(
         {
             traderAssorts.TryGetValue(offer.User.Id, out var assorts);
             if (
-                assorts
+                assorts is not null
+                && assorts
                     .BarterScheme.Where(x => itemIds.Contains(x.Key))
                     .Any(barterKvP =>
                         barterKvP.Value.Any(subBarter => subBarter.Any(subBarter => subBarter.SptQuestLocked.GetValueOrDefault(false)))

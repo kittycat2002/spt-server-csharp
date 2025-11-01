@@ -312,7 +312,7 @@ public class RagfairController(
     protected List<RagfairOffer> GetOffersForSearchType(
         SearchRequestData searchRequest,
         HashSet<MongoId> itemsToAdd,
-        Dictionary<MongoId, TraderAssort> traderAssorts,
+        Dictionary<MongoId, TraderAssort?> traderAssorts,
         PmcData pmcProfile
     )
     {
