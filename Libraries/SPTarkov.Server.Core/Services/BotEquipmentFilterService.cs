@@ -242,7 +242,7 @@ public class BotEquipmentFilterService(
                 var botEquipment = baseBotNode.BotInventory.Equipment[equipmentSlotKvP.Key];
 
                 // Skip equipment slot if blacklist doesn't exist / is empty
-                if (!blacklist.Equipment?.TryGetValue(equipmentSlotKvP.Key.ToString(), out var equipmentSlotBlacklist) ?? true)
+                if (blacklist.Equipment?.TryGetValue(equipmentSlotKvP.Key.ToString(), out var equipmentSlotBlacklist) is null)
                 {
                     continue;
                 }
@@ -275,7 +275,7 @@ public class BotEquipmentFilterService(
             // Loop over each caliber + cartridges of that type
             foreach (var (caliber, cartridges) in baseBotNode.BotInventory.Ammo)
             {
-                if (!whitelist.Cartridge?.TryGetValue(caliber, out var matchingWhitelist) ?? true)
+                if (whitelist.Cartridge?.TryGetValue(caliber, out var matchingWhitelist) is null)
                 // No cartridge whitelist, move to next cartridge
                 {
                     continue;
@@ -286,7 +286,7 @@ public class BotEquipmentFilterService(
                 foreach (var ammoKvP in cartridges)
                 // Cartridge not on whitelist
                 {
-                    if (!matchingWhitelist.Contains(ammoKvP.Key))
+                    if (!matchingWhitelist?.Contains(ammoKvP.Key) ?? false)
                     // Remove
                     {
                         cartridges.Remove(ammoKvP.Key);
@@ -306,7 +306,8 @@ public class BotEquipmentFilterService(
         {
             // Skip cartridge slot if blacklist doesn't exist / is empty
             if (
-                (!blacklist.Cartridge?.TryGetValue(caliber, out var cartridgeCaliberBlacklist) ?? true)
+                blacklist.Cartridge?.TryGetValue(caliber, out var cartridgeCaliberBlacklist) is null
+                || cartridgeCaliberBlacklist is null
                 || cartridgeCaliberBlacklist.Count == 0
             )
             {
