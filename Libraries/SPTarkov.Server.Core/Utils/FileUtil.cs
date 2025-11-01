@@ -4,9 +4,9 @@ using SPTarkov.DI.Annotations;
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable]
-public class FileUtil
+public sealed class FileUtil
 {
-    protected const string _modBasePath = "user/mods/";
+    private const string _modBasePath = "user/mods/";
 
     public List<string> GetFiles(string path, bool recursive = false, string searchPattern = "*")
     {

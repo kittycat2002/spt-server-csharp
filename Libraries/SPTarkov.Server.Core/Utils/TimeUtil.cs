@@ -4,7 +4,7 @@ using SPTarkov.Server.Core.Extensions;
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
-public class TimeUtil
+public sealed class TimeUtil
 {
     public const int OneHourAsSeconds = 3600;
 

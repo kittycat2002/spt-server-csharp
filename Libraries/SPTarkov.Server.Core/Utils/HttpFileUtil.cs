@@ -5,7 +5,7 @@ using SPTarkov.Server.Core.Helpers;
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable]
-public class HttpFileUtil(HttpServerHelper httpServerHelper)
+public sealed class HttpFileUtil(HttpServerHelper httpServerHelper)
 {
     public async Task SendFile(HttpResponse resp, string filePath)
     {

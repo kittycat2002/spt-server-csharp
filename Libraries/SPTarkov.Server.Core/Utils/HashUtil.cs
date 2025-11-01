@@ -6,7 +6,7 @@ using SPTarkov.DI.Annotations;
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
-public class HashUtil(RandomUtil _randomUtil)
+public sealed class HashUtil(RandomUtil _randomUtil)
 {
     public uint GenerateCrc32ForData(string data)
     {

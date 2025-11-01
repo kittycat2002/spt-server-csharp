@@ -10,7 +10,7 @@ using SPTarkov.Server.Core.Utils.Json;
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
-public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, JsonUtil jsonUtil)
+public sealed class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, JsonUtil jsonUtil)
 {
     private readonly FrozenSet<string> _directoriesToIgnore = ["./SPT_Data/database/locales/server"];
     private readonly FrozenSet<string> _filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
@@ -34,7 +34,7 @@ public class ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, Js
     /// <param name="onReadCallback"></param>
     /// <param name="onObjectDeserialized"></param>
     /// <returns>Task</returns>
-    protected async Task<object> LoadRecursiveAsync(
+    private async Task<object> LoadRecursiveAsync(
         string filePath,
         Type loadedType,
         Func<string, Task>? onReadCallback = null,

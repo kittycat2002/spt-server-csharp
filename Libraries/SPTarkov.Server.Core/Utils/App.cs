@@ -11,7 +11,7 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
-public class App(
+public sealed class App(
     IServiceProvider serviceProvider,
     ISptLogger<App> logger,
     TimeUtil timeUtil,
@@ -72,7 +72,7 @@ public class App(
         logger.Success(GetRandomisedStartMessage());
     }
 
-    protected string GetRandomisedStartMessage()
+    private string GetRandomisedStartMessage()
     {
         if (randomUtil.GetInt(1, 1000) > 999)
         {
@@ -82,7 +82,7 @@ public class App(
         return serverLocalisationService.GetText("server_start_success");
     }
 
-    protected async Task Update()
+    private async Task Update()
     {
         while (!appLifeTime.ApplicationStopping.IsCancellationRequested)
         {
@@ -114,7 +114,7 @@ public class App(
         }
     }
 
-    protected void LogUpdateException(Exception err, IOnUpdate updateable)
+    private void LogUpdateException(Exception err, IOnUpdate updateable)
     {
         logger.Error(serverLocalisationService.GetText("scheduled_event_failed_to_run", updateable.GetType().FullName));
         logger.Error(err.ToString());
