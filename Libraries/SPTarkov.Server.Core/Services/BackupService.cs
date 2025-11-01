@@ -21,7 +21,7 @@ public class BackupService
     // Runs Init() every x minutes
     protected Timer _backupIntervalTimer;
 
-    protected SemaphoreSlim BackupLock = new SemaphoreSlim(1, 1);
+    protected readonly SemaphoreSlim BackupLock = new SemaphoreSlim(1, 1);
     protected long LastBackupTimestamp;
 
     protected readonly FileUtil FileUtil;
@@ -94,7 +94,7 @@ public class BackupService
 
         // If the backup lock is already locked, skip backup. This stops multiple backups running at once
         // Passing 0 is a non-blocking Wait, will return false if the lock can't be acquired
-        bool lockAcquired = await BackupLock.WaitAsync(0);
+        var lockAcquired = await BackupLock.WaitAsync(0);
         if (!lockAcquired)
         {
             return;
@@ -153,7 +153,7 @@ public class BackupService
                 }
 
                 // Write a copy of active mods.
-                await FileUtil.WriteFileAsync(Path.Combine(targetDir, activeModsFilename), JsonUtil.Serialize(ActiveServerMods));
+                await FileUtil.WriteFileAsync(Path.Combine(targetDir, activeModsFilename), JsonUtil.Serialize(ActiveServerMods)!);
 
                 if (Logger.IsLogEnabled(LogLevel.Debug))
                 {
@@ -255,7 +255,7 @@ public class BackupService
         var profileFilename = $"{profileId}.json";
         var backupPathsWithCreationDateTime = GetBackupPathsWithCreationTimestamp(backupPaths);
 
-        foreach (var (backupTimestamp, backupPath) in backupPathsWithCreationDateTime.Reverse())
+        foreach (var (_, backupPath) in backupPathsWithCreationDateTime.Reverse())
         {
             var profileBackups = FileUtil.GetFiles(backupPath);
             var profileBackup = profileBackups.FirstOrDefault(path => path.EndsWith(profileFilename));
