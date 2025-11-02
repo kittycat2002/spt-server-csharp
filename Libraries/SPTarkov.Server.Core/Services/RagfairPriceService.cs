@@ -537,9 +537,11 @@ public class RagfairPriceService(
         foreach (var item in weaponWithChildren)
         {
             // Root item uses static price
-            if (item.ParentId == null)
+            if (item.ParentId == null || string.Equals(item.ParentId, "hideout", StringComparison.OrdinalIgnoreCase))
             {
                 priceTotal += GetStaticPriceForItem(item.Template) ?? 0;
+
+                continue;
             }
 
             priceTotal += GetFleaPriceForItem(item.Template);
