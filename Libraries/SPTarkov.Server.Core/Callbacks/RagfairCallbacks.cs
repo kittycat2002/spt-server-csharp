@@ -24,7 +24,7 @@ public class RagfairCallbacks(
 {
     protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
 
-    public Task OnLoad()
+    public Task OnLoad(CancellationToken stoppingToken)
     {
         ragfairPriceService.Load();
         ragfairServer.Load();
@@ -32,7 +32,7 @@ public class RagfairCallbacks(
         return Task.CompletedTask;
     }
 
-    public Task<bool> OnUpdate(long secondsSinceLastRun)
+    public Task<bool> OnUpdate(CancellationToken stoppingToken, long secondsSinceLastRun)
     {
         if (secondsSinceLastRun < RagfairConfig.RunIntervalSeconds)
         {

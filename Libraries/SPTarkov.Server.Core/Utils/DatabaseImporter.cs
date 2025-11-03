@@ -25,13 +25,13 @@ public class DatabaseImporter(
     private const string SptDataPath = "./SPT_Data/";
     protected readonly Dictionary<string, string> DatabaseHashes = [];
 
-    public async Task OnLoad()
+    public async Task OnLoad(CancellationToken stoppingToken)
     {
         var shouldVerify = !ProgramStatics.DEBUG();
 
         if (shouldVerify)
         {
-            await LoadHashes();
+            await LoadHashes(stoppingToken);
         }
 
         await HydrateDatabase(SptDataPath, shouldVerify);
@@ -58,7 +58,7 @@ public class DatabaseImporter(
         }
     }
 
-    protected async Task LoadHashes()
+    protected async Task LoadHashes(CancellationToken stoppingToken)
     {
         var checksFilePath = Path.Combine(SptDataPath, "checks.dat");
 
@@ -69,9 +69,9 @@ public class DatabaseImporter(
                 await using var fs = File.OpenRead(checksFilePath);
 
                 using var reader = new StreamReader(fs, Encoding.ASCII);
-                string base64Content = await reader.ReadToEndAsync();
+                var base64Content = await reader.ReadToEndAsync(stoppingToken);
 
-                byte[] jsonBytes = Convert.FromBase64String(base64Content);
+                var jsonBytes = Convert.FromBase64String(base64Content);
 
                 await using var ms = new MemoryStream(jsonBytes);
 

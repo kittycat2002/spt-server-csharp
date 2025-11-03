@@ -15,7 +15,7 @@ public class HideoutCallbacks(HideoutController hideoutController, ConfigServer 
 {
     protected readonly HideoutConfig HideoutConfig = configServer.GetConfig<HideoutConfig>();
 
-    public Task<bool> OnUpdate(long secondsSinceLastRun)
+    public Task<bool> OnUpdate(CancellationToken stoppingToken, long secondsSinceLastRun)
     {
         if (secondsSinceLastRun < HideoutConfig.RunIntervalSeconds)
         {

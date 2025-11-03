@@ -16,13 +16,13 @@ public class TraderCallbacks(HttpResponseUtil httpResponseUtil, TraderController
 {
     protected readonly TraderConfig TraderConfig = configServer.GetConfig<TraderConfig>();
 
-    public Task OnLoad()
+    public Task OnLoad(CancellationToken stoppingToken)
     {
         traderController.Load();
         return Task.CompletedTask;
     }
 
-    public Task<bool> OnUpdate(long _)
+    public Task<bool> OnUpdate(CancellationToken stoppingToken, long _)
     {
         traderController.Update();
 

@@ -2,5 +2,5 @@ namespace SPTarkov.Server.Core.DI;
 
 public interface IOnLoad
 {
-    Task OnLoad();
+    Task OnLoad(CancellationToken stoppingToken);
 }

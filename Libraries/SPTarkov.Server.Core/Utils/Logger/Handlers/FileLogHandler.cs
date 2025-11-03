@@ -106,7 +106,7 @@ public class FileLogHandler(IEnumerable<IFilePatternReplacer> replacers) : BaseL
         return finalFile;
     }
 
-    public Task OnLoad()
+    public Task OnLoad(CancellationToken stoppingToken)
     {
         Task.Factory.StartNew(FileSystemWatcherMonitor, TaskCreationOptions.LongRunning);
         return Task.CompletedTask;

@@ -11,7 +11,7 @@ public class SaveCallbacks(SaveServer saveServer, ConfigServer configServer, Bac
 {
     protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
 
-    public async Task OnLoad()
+    public async Task OnLoad(CancellationToken stoppingToken)
     {
         await saveServer.LoadAsync();
 
@@ -19,7 +19,7 @@ public class SaveCallbacks(SaveServer saveServer, ConfigServer configServer, Bac
         await backupService.StartBackupSystem();
     }
 
-    public async Task<bool> OnUpdate(long secondsSinceLastRun)
+    public async Task<bool> OnUpdate(CancellationToken stoppingToken, long secondsSinceLastRun)
     {
         if (secondsSinceLastRun < CoreConfig.ProfileSaveIntervalInSeconds)
         {

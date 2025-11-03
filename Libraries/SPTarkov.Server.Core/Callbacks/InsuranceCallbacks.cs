@@ -17,7 +17,7 @@ public class InsuranceCallbacks(InsuranceController insuranceController, HttpRes
 {
     protected readonly InsuranceConfig InsuranceConfig = configServer.GetConfig<InsuranceConfig>();
 
-    public Task<bool> OnUpdate(long secondsSinceLastRun)
+    public Task<bool> OnUpdate(CancellationToken stoppingToken, long secondsSinceLastRun)
     {
         if (secondsSinceLastRun < InsuranceConfig.RunIntervalSeconds)
         {

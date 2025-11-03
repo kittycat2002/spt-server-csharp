@@ -23,7 +23,7 @@ public class BtrDeliveryCallbacks(
 {
     protected readonly BtrDeliveryConfig BtrDeliveryConfig = configServer.GetConfig<BtrDeliveryConfig>();
 
-    public Task<bool> OnUpdate(long secondsSinceLastRun)
+    public Task<bool> OnUpdate(CancellationToken stoppingToken, long secondsSinceLastRun)
     {
         if (secondsSinceLastRun < BtrDeliveryConfig.RunIntervalSeconds)
         {
