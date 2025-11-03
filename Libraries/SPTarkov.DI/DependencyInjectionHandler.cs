@@ -166,7 +166,7 @@ public class DependencyInjectionHandler(IServiceCollection serviceCollection)
                 if (!typeof(IHostedService).IsAssignableFrom(implementationType))
                 {
                     throw new ArgumentException(
-                        $"Invalid hosted service registration: {implementationType.FullName} does not implement IHostedService.",
+                        $"Invalid hosted service registration: {implementationType.FullName} does not derive from or implement IHostedService.",
                         nameof(implementationType)
                     );
                 }
