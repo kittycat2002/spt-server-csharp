@@ -742,7 +742,10 @@ public class RagfairOfferGenerator(
         if (itemHelper.IsOfBaseclass(itemDetails.Id, BaseClasses.FUEL))
         {
             var totalCapacity = itemDetails.Properties.MaxResource;
-            var remainingFuel = Math.Round((double)totalCapacity * maxMultiplier);
+
+            // Randomise multi between value in config and 1 (100%)
+            var randomisedMulti = randomUtil.GetDouble(maxMultiplier, 1);
+            var remainingFuel = Math.Round((double)totalCapacity * randomisedMulti);
             rootItem.Upd.Resource = new UpdResource { UnitsConsumed = totalCapacity - remainingFuel, Value = remainingFuel };
         }
     }
