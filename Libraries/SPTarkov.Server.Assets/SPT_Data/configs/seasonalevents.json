@@ -9892,7 +9892,7 @@
       "endMonth": "11",
       "name": "halloween",
       "settings": {
-        "enableSummoning": false,
+        "enableSummoning": true,
         "removeEntryRequirement": [
           "laboratory"
         ],
@@ -9902,7 +9902,7 @@
             "laboratory"
           ],
           "disableWaves": [],
-          "enabled": true,
+          "enabled": false,
           "mapInfectionAmount": {
             "Sandbox": 25,
             "factory4": 50,
@@ -13977,6 +13977,22 @@
           "BotRole": "infectedTagilla",
           "SavagePlayerBehaviour": "AlwaysEnemies",
           "UsecPlayerBehaviour": "AlwaysEnemies"
+        }
+      ]
+    },
+    "summon": {
+      "default": [
+        {
+          "AlwaysEnemies": [],
+          "AlwaysFriends": [],
+          "BearPlayerBehaviour": "AlwaysFriends",
+          "BotRole": "peacefullZryachiyEvent",
+          "ChancedEnemies": [],
+          "SavageEnemyChance": 0,
+          "BearEnemyChance": 0,
+          "UsecEnemyChance": 0,
+          "SavagePlayerBehaviour": "AlwaysFriends",
+          "UsecPlayerBehaviour": "AlwaysFriends"
         }
       ]
     }
