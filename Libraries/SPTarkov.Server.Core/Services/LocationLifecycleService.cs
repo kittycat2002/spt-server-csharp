@@ -63,8 +63,6 @@ public class LocationLifecycleService(
     protected const string Savage = "savage";
     protected const string Scav = "scav";
 
-    public object botConfig { get; private set; }
-
     /// <summary>
     /// Check player type for pmc or scav
     /// </summary>
