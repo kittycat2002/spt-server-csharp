@@ -588,7 +588,21 @@ public class RagfairOfferGenerator(
             }
 
             var barterSchemeItems = barterScheme[0];
-            var loyalLevel = assortsClone.LoyalLevelItems[item.Id];
+            if (!assortsClone.LoyalLevelItems.TryGetValue(item.Id, out var loyalLevel))
+            {
+                logger.Warning(
+                    localisationService.GetText(
+                        "ragfair-missing_loyal_level_item",
+                        new
+                        {
+                            itemId = item.Id,
+                            tpl = item.Template,
+                            name = trader.Base.Nickname,
+                        }
+                    )
+                );
+                continue;
+            }
 
             var createOfferDetails = new CreateFleaOfferDetails
             {
