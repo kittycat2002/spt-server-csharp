@@ -717,6 +717,11 @@ public class PostDbLoadService(
                 continue;
             }
 
+            if (traderData.QuestAssort is null)
+            {
+                continue;
+            }
+
             // Merge started/success/fail quest assorts into one dictionary
             var mergedQuestAssorts = new Dictionary<MongoId, MongoId>();
             mergedQuestAssorts = mergedQuestAssorts
