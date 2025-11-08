@@ -279,7 +279,7 @@ public class SeasonalEventService(
     /// </summary>
     public void CacheActiveEvents()
     {
-        var currentDate = DateTimeOffset.UtcNow.DateTime;
+        var currentDate = DateTimeOffset.Now.DateTime;
         var seasonalEvents = GetEventDetails();
 
         // reset existing data
