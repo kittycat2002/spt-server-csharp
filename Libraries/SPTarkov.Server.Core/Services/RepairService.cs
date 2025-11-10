@@ -247,13 +247,13 @@ public class RepairService(
 
         // You can both crit fail and succeed at the same time, for fun (Balances out to 0 with default settings)
         // Add a random chance to crit-fail
-        if (random.Next() <= RepairConfig.WeaponTreatment.CritFailureChance)
+        if (random.NextDouble() <= RepairConfig.WeaponTreatment.CritFailureChance)
         {
             skillPoints -= RepairConfig.WeaponTreatment.CritFailureAmount;
         }
 
         // Add a random chance to crit-succeed
-        if (random.Next() <= RepairConfig.WeaponTreatment.CritSuccessChance)
+        if (random.NextDouble() <= RepairConfig.WeaponTreatment.CritSuccessChance)
         {
             skillPoints += RepairConfig.WeaponTreatment.CritSuccessAmount;
         }
