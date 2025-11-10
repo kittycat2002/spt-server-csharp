@@ -687,14 +687,12 @@ public class BotLootGenerator(
         Dictionary<string, double> modChances
     )
     {
-        var chosenWeaponType = randomUtil.GetArrayValue<string>(
-            [
-                nameof(EquipmentSlots.FirstPrimaryWeapon),
-                nameof(EquipmentSlots.FirstPrimaryWeapon),
-                nameof(EquipmentSlots.FirstPrimaryWeapon),
-                nameof(EquipmentSlots.Holster),
-            ]
-        );
+        var chosenWeaponType = randomUtil.GetArrayValue<string>([
+            nameof(EquipmentSlots.FirstPrimaryWeapon),
+            nameof(EquipmentSlots.FirstPrimaryWeapon),
+            nameof(EquipmentSlots.FirstPrimaryWeapon),
+            nameof(EquipmentSlots.Holster),
+        ]);
         var randomisedWeaponCount = randomUtil.GetInt(
             PMCConfig.LooseWeaponInBackpackLootMinMax.Min,
             PMCConfig.LooseWeaponInBackpackLootMinMax.Max

@@ -34,9 +34,9 @@ public class ForceChristmasMessageHandler(
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
-                _randomUtil.GetArrayValue(
-                    [_serverLocalisationService.GetText("chatbot-forced_event_enabled", SeasonalEventType.Christmas)]
-                ),
+                _randomUtil.GetArrayValue([
+                    _serverLocalisationService.GetText("chatbot-forced_event_enabled", SeasonalEventType.Christmas),
+                ]),
                 [],
                 null
             );

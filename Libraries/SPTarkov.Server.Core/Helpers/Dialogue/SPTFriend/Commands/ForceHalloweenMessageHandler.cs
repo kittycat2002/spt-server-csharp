@@ -34,9 +34,9 @@ public class ForceHalloweenMessageHandler(
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
-                _randomUtil.GetArrayValue(
-                    [_serverLocalisationService.GetText("chatbot-forced_event_enabled", SeasonalEventType.Halloween)]
-                ),
+                _randomUtil.GetArrayValue([
+                    _serverLocalisationService.GetText("chatbot-forced_event_enabled", SeasonalEventType.Halloween),
+                ]),
                 [],
                 null
             );

@@ -53,16 +53,14 @@ public class LootGenerator(
             {
                 // Choose one at random + add to results array
                 var chosenSealedContainer = randomUtil.GetArrayValue(sealedWeaponContainerPool);
-                result.Add(
-                    [
-                        new Item
-                        {
-                            Id = new MongoId(),
-                            Template = chosenSealedContainer.Id,
-                            Upd = new Upd { StackObjectsCount = 1, SpawnedInSession = true },
-                        },
-                    ]
-                );
+                result.Add([
+                    new Item
+                    {
+                        Id = new MongoId(),
+                        Template = chosenSealedContainer.Id,
+                        Upd = new Upd { StackObjectsCount = 1, SpawnedInSession = true },
+                    },
+                ]);
             }
         }
 

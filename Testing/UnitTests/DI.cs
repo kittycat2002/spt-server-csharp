@@ -38,11 +38,9 @@ public class DI
         var diHandler = new DependencyInjectionHandler(services);
 
         diHandler.AddInjectableTypesFromTypeAssembly(typeof(App));
-        diHandler.AddInjectableTypesFromTypeList(
-            [
-                typeof(MockLogger<>), // TODO: this needs to be enabled but the randomizer needs to NOT be random, typeof(MockRandomUtil)
-            ]
-        );
+        diHandler.AddInjectableTypesFromTypeList([
+            typeof(MockLogger<>), // TODO: this needs to be enabled but the randomizer needs to NOT be random, typeof(MockRandomUtil)
+        ]);
 
         diHandler.InjectAll();
 

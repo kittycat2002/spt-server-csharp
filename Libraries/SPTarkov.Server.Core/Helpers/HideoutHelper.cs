@@ -1371,16 +1371,14 @@ public class HideoutHelper(
         List<List<Item>> itemsToAdd = [];
         for (var index = 0; index < craftedCoinCount; index++)
         {
-            itemsToAdd.Add(
-                [
-                    new Item
-                    {
-                        Id = new MongoId(),
-                        Template = ItemTpl.BARTER_PHYSICAL_BITCOIN,
-                        Upd = new Upd { StackObjectsCount = 1 },
-                    },
-                ]
-            );
+            itemsToAdd.Add([
+                new Item
+                {
+                    Id = new MongoId(),
+                    Template = ItemTpl.BARTER_PHYSICAL_BITCOIN,
+                    Upd = new Upd { StackObjectsCount = 1 },
+                },
+            ]);
         }
 
         // Create request for what we want to add to stash
