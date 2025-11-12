@@ -689,19 +689,21 @@ public class CircleOfCultistService(
             var questData = questHelper.GetQuestFromDb(task.QId, pmcData);
             var handoverConditions = questData.Conditions.AvailableForFinish.Where(condition => condition.ConditionType == "HandoverItem");
             foreach (var condition in handoverConditions)
-            foreach (var neededItem in condition.Target.List)
             {
-                if (itemRewardBlacklist.Contains(neededItem) || !itemHelper.IsValidItem(neededItem))
+                foreach (var neededItem in condition.Target.List)
                 {
-                    continue;
-                }
+                    if (itemRewardBlacklist.Contains(neededItem) || !itemHelper.IsValidItem(neededItem))
+                    {
+                        continue;
+                    }
 
-                if (logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    logger.Debug($"Added Task Loot: {itemHelper.GetItemName(neededItem)}");
-                }
+                    if (logger.IsLogEnabled(LogLevel.Debug))
+                    {
+                        logger.Debug($"Added Task Loot: {itemHelper.GetItemName(neededItem)}");
+                    }
 
-                rewardPool.Add(neededItem);
+                    rewardPool.Add(neededItem);
+                }
             }
         }
     }
