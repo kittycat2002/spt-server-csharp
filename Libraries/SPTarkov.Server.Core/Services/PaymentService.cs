@@ -444,8 +444,12 @@ public class PaymentService(
                 // Containers where taking money from would inconvenience player
 
                 // Get template Id of items' parent so we can see if items in a container we want to de prioritise
-                var aImmediateParentTemplate = itemIdToTplCache.FirstOrDefault(item => string.Equals(item.Key, a.ParentId, StringComparison.OrdinalIgnoreCase));
-                var bImmediateParentTemplate = itemIdToTplCache.FirstOrDefault(item => string.Equals(item.Key, b.ParentId, StringComparison.OrdinalIgnoreCase));
+                var aImmediateParentTemplate = itemIdToTplCache.FirstOrDefault(item =>
+                    string.Equals(item.Key, a.ParentId, StringComparison.OrdinalIgnoreCase)
+                );
+                var bImmediateParentTemplate = itemIdToTplCache.FirstOrDefault(item =>
+                    string.Equals(item.Key, b.ParentId, StringComparison.OrdinalIgnoreCase)
+                );
 
                 // e.g. secure container
                 var aInDeprioContainer = InventoryConfig.DeprioritisedMoneyContainers.Contains(aImmediateParentTemplate.Value);
