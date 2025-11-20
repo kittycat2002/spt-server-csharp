@@ -10,7 +10,7 @@ using SPTarkov.Server.Core.Utils.Cloners;
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
-public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
+public sealed class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
 {
     /// <summary>
     /// Max value at 2^48
@@ -142,11 +142,12 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// </summary>
     /// <param name="chancePercent">The percentage chance (0-100) that the event will occur.</param>
     /// <returns>`true` if the event occurs, `false` otherwise.</returns>
-    public virtual bool GetChance100(double? chancePercent)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool GetChance100(double? chancePercent)
     {
         chancePercent = Math.Clamp(chancePercent ?? 0, 0D, 100D);
 
-        return GetInt(0, 100, exclusive: true) <= chancePercent;
+        return GetInt(1, 100, exclusive: true) <= chancePercent;
     }
 
     /// <summary>
@@ -156,7 +157,7 @@ public class RandomUtil(ISptLogger<RandomUtil> logger, ICloner cloner)
     /// <param name="collection">The collection of strings to select a random value from.</param>
     /// <returns>A randomly selected string from the array.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public virtual T GetRandomElement<T>(IEnumerable<T> collection)
+    public T GetRandomElement<T>(IEnumerable<T> collection)
     {
         // Already a List
         if (collection is IList<T> list)
