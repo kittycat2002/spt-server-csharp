@@ -180,11 +180,6 @@ public class BackupService
     /// <returns> True if enabled, false otherwise. </returns>
     protected bool IsEnabled()
     {
-        if(CultureInfo.CurrentCulture.Calendar.ToString() != "System.Globalization.GregorianCalendar")
-        {
-            return false;
-        }
-
         if (BackupConfig.Enabled)
         {
             return true;
