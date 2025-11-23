@@ -54,7 +54,15 @@ public sealed class SPTStartupHostedService(
 
                 logger.Debug($"OS: {Environment.OSVersion.Version} | {Environment.OSVersion.Platform}");
                 logger.Debug($"Pagefile: {pageFileGb:F2} GB");
+                if (pageFileGb <= 0)
+                {
+                    logger.Warning("Pagefile size is 0 GB, you may encounter out of memory errors when loading into raids");
+                }
                 logger.Debug($"RAM: {totalMemoryGb:F2} GB");
+                if (totalMemoryGb <= 16)
+                {
+                    logger.Warning("RAM size is below recommended, you may encounter out of memory errors when loading into raids");
+                }
                 logger.Debug($"Ran as admin: {Environment.IsPrivilegedProcess}");
                 logger.Debug($"CPU cores: {Environment.ProcessorCount}");
                 logger.Debug($"PATH: {(Environment.ProcessPath ?? "null returned").Encode(EncodeType.BASE64)}");
