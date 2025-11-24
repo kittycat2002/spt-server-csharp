@@ -9955,6 +9955,24 @@
       "collectionTimeHours": 48,
       "associatedEvent": "Promo",
       "maxToSendPlayer": 5
+    },
+	"IL2CPP": {
+      "items": [
+        {
+          "_id": "69247732af29b6d0d8b9eb42",
+          "_tpl": "686666db646d47fec3018925",
+          "slotId": "main",
+          "upd": {
+            "StackObjectsCount": 1
+          },
+          "parentId": "6924774ab8d5c1c95931186f"
+        }
+      ],
+      "sender": "System",
+      "messageText": "It was good while it lasted",
+      "collectionTimeHours": 96,
+      "associatedEvent": "Promo",
+      "maxToSendPlayer": 1
     }
   }
 }
