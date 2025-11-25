@@ -26,7 +26,7 @@ public class FenceService(
     ItemHelper itemHelper,
     PresetHelper presetHelper,
     ServerLocalisationService localisationService,
-    ConfigServer configServer,
+    TraderConfig traderConfig,
     ICloner _cloner
 )
 {
@@ -62,8 +62,6 @@ public class FenceService(
     ///     Time when some items in assort will be replaced
     /// </summary>
     protected long nextPartialRefreshTimestamp;
-
-    protected readonly TraderConfig traderConfig = configServer.GetConfig<TraderConfig>();
 
     /// <summary>
     ///     Replace main fence assort with new assort

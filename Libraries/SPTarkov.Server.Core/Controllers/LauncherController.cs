@@ -24,11 +24,9 @@ public class LauncherController(
     DatabaseService databaseService,
     ServerLocalisationService serverLocalisationService,
     ProfileDataService profileDataService,
-    ConfigServer configServer
+    CoreConfig coreConfig
 )
 {
-    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
-
     /// <summary>
     ///     Handle launcher connecting to server
     /// </summary>
@@ -38,13 +36,13 @@ public class LauncherController(
         // Get all possible profile types + filter out any that are blacklisted
         var profileTemplates = databaseService
             .GetProfileTemplates()
-            .Where(profile => !CoreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profile.Key))
+            .Where(profile => !coreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profile.Key))
             .ToDictionary();
 
         return new ConnectResponse
         {
             BackendUrl = httpServerHelper.GetBackendUrl(),
-            Name = CoreConfig.ServerName,
+            Name = coreConfig.ServerName,
             Editions = profileTemplates.Select(x => x.Key).ToList(),
             ProfileDescriptions = GetProfileDescriptions(profileTemplates),
         };
@@ -158,7 +156,7 @@ public class LauncherController(
     /// <returns>Session id</returns>
     public MongoId Wipe(RegisterData info)
     {
-        if (!CoreConfig.AllowProfileWipe)
+        if (!coreConfig.AllowProfileWipe)
         {
             return MongoId.Empty();
         }
@@ -183,7 +181,7 @@ public class LauncherController(
     /// <returns></returns>
     public string GetCompatibleTarkovVersion()
     {
-        return CoreConfig.CompatibleTarkovVersion;
+        return coreConfig.CompatibleTarkovVersion;
     }
 
     /// <summary>

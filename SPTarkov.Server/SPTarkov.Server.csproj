@@ -46,8 +46,4 @@
   <ItemGroup>
     <None Include="..\LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Logger\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
 </Project>

@@ -20,12 +20,10 @@ public class WeatherController(
     SeasonalEventService seasonalEventService,
     RaidWeatherService raidWeatherService,
     WeatherHelper weatherHelper,
-    ConfigServer configServer,
+    WeatherConfig weatherConfig,
     ICloner cloner
 )
 {
-    protected readonly WeatherConfig WeatherConfig = configServer.GetConfig<WeatherConfig>();
-
     /// <summary>
     ///     Handle client/weather
     /// </summary>
@@ -49,7 +47,7 @@ public class WeatherController(
 
         // Get server uptime seconds multiplied by a multiplier and add to current time as seconds
         result.Time = weatherHelper.GetInRaidTime().GetBsgFormattedWeatherTime();
-        result.Acceleration = WeatherConfig.Acceleration;
+        result.Acceleration = weatherConfig.Acceleration;
 
         var presetWeights = cloner.Clone(weatherGenerator.GetWeatherPresetWeightsBySeason(currentSeason));
         result.Weather = weatherGenerator.GenerateWeather(result.Season.Value, ref presetWeights);

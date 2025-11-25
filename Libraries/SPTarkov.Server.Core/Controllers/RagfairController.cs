@@ -1,3 +1,4 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Generators;
@@ -12,7 +13,6 @@ using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Ragfair;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -46,11 +46,9 @@ public class RagfairController(
     PaymentService paymentService,
     RagfairPriceService ragfairPriceService,
     RagfairOfferGenerator ragfairOfferGenerator,
-    ConfigServer configServer
+    RagfairConfig ragfairConfig
 )
 {
-    protected readonly RagfairConfig RagfairConfig = configServer.GetConfig<RagfairConfig>();
-
     /// <summary>
     ///     Check all profiles and sell player offers / send player money for listing if it sold
     /// </summary>
@@ -566,7 +564,7 @@ public class RagfairController(
 
         // Check for and apply item price modifer if it exists in config
         var averageOfferPrice = averages.Avg;
-        if (RagfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(rootOfferItem.Template, out var itemPriceModifer))
+        if (ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(rootOfferItem.Template, out var itemPriceModifer))
         {
             averageOfferPrice *= itemPriceModifer;
         }
@@ -587,7 +585,7 @@ public class RagfairController(
         offer.SellResults = ragfairSellHelper.RollForSale(sellChancePercent, (int)stackCountTotal);
 
         // Subtract flea market fee from stash
-        if (RagfairConfig.Sell.Fees)
+        if (ragfairConfig.Sell.Fees)
         {
             var taxFeeChargeFailed = ChargePlayerTaxFee(
                 sessionID,
@@ -669,7 +667,7 @@ public class RagfairController(
         var newRootOfferItem = offer.Items[0]; // TODO: add logic like single/multi offers to find root item
 
         // Check for and apply item price modifer if it exists in config
-        if (RagfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(newRootOfferItem.Template, out var itemPriceModifer))
+        if (ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(newRootOfferItem.Template, out var itemPriceModifer))
         {
             singleItemPrice *= itemPriceModifer;
         }
@@ -694,7 +692,7 @@ public class RagfairController(
         offer.SellResults = ragfairSellHelper.RollForSale(sellChancePercent, (int)stackCountTotal, true);
 
         // Subtract flea market fee from stash
-        if (RagfairConfig.Sell.Fees)
+        if (ragfairConfig.Sell.Fees)
         {
             var taxFeeChargeFailed = ChargePlayerTaxFee(
                 sessionID,
@@ -782,7 +780,7 @@ public class RagfairController(
         else
         {
             // Check for and apply item price modifer if it exists in config
-            if (RagfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(offerRootItem.Template, out var itemPriceModifer))
+            if (ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(offerRootItem.Template, out var itemPriceModifer))
             {
                 averageOfferPriceSingleItem *= itemPriceModifer;
             }
@@ -802,7 +800,7 @@ public class RagfairController(
         offer.SellResults = ragfairSellHelper.RollForSale(sellChancePercent, (int)stackCountTotal);
 
         // Subtract flea market fee from stash
-        if (RagfairConfig.Sell.Fees)
+        if (ragfairConfig.Sell.Fees)
         {
             var taxFeeChargeFailed = ChargePlayerTaxFee(
                 sessionID,
@@ -1026,10 +1024,10 @@ public class RagfairController(
 
         // Only reduce time to end if time remaining is greater than what we would set it to
         var differenceInSeconds = playerOffer.EndTime - timeUtil.GetTimeStamp();
-        if (differenceInSeconds > RagfairConfig.Sell.ExpireSeconds)
+        if (differenceInSeconds > ragfairConfig.Sell.ExpireSeconds)
         {
             // `expireSeconds` Default is 71 seconds
-            var newEndTime = RagfairConfig.Sell.ExpireSeconds + timeUtil.GetTimeStamp();
+            var newEndTime = ragfairConfig.Sell.ExpireSeconds + timeUtil.GetTimeStamp();
             playerOffer.EndTime = (long?)Math.Round((double)newEndTime);
         }
 
@@ -1062,7 +1060,7 @@ public class RagfairController(
         var playerOffer = playerOffers[playerOfferIndex];
 
         // MOD: Pay flea market fee
-        if (RagfairConfig.Sell.Fees)
+        if (ragfairConfig.Sell.Fees)
         {
             var count = 1;
             var sellInOncePiece = playerOffer.SellInOnePiece.GetValueOrDefault(false);

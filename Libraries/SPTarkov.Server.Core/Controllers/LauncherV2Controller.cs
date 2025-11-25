@@ -18,13 +18,11 @@ public class LauncherV2Controller(
     SaveServer saveServer,
     DatabaseService databaseService,
     ServerLocalisationService serverLocalisationService,
-    ConfigServer configServer,
+    CoreConfig coreConfig,
     Watermark watermark,
     ProfileController profileController
 )
 {
-    protected readonly CoreConfig CoreConfig = configServer.GetConfig<CoreConfig>();
-
     /// <summary>
     ///     Returns a simple string of Pong!
     /// </summary>
@@ -112,7 +110,7 @@ public class LauncherV2Controller(
     /// <returns></returns>
     public string EftVersion()
     {
-        return CoreConfig.CompatibleTarkovVersion;
+        return coreConfig.CompatibleTarkovVersion;
     }
 
     /// <summary>
@@ -176,7 +174,7 @@ public class LauncherV2Controller(
 
     public bool Wipe(RegisterData info)
     {
-        if (!CoreConfig.AllowProfileWipe)
+        if (!coreConfig.AllowProfileWipe)
         {
             return false;
         }

@@ -17,11 +17,10 @@ public class BotNameService(
     RandomUtil randomUtil,
     ServerLocalisationService serverLocalisationService,
     DatabaseService databaseService,
-    ConfigServer configServer
+    BotConfig botConfig
 )
 {
     protected readonly Lock LockObject = new();
-    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
     protected readonly HashSet<string> UsedNameCache = [];
 
     /// <summary>
@@ -51,7 +50,7 @@ public class BotNameService(
         var isPmc = botGenerationDetails.IsPmc;
 
         // Never show for players
-        var showTypeInNickname = !botGenerationDetails.IsPlayerScav && BotConfig.ShowTypeInNickname;
+        var showTypeInNickname = !botGenerationDetails.IsPlayerScav && botConfig.ShowTypeInNickname;
         var roleShouldBeUnique = uniqueRoles?.Contains(botGenerationDetails.RoleLowercase);
 
         var attempts = 0;
@@ -59,7 +58,7 @@ public class BotNameService(
         {
             // Get bot name with leading/trailing whitespace removed
             var name = isPmc // Explicit handling of PMCs, all other bots will get "first_name last_name"
-                ? botHelper.GetPmcNicknameOfMaxLength(BotConfig.BotNameLengthLimit, botGenerationDetails.Side)
+                ? botHelper.GetPmcNicknameOfMaxLength(botConfig.BotNameLengthLimit, botGenerationDetails.Side)
                 : $"{randomUtil.GetArrayValue(botJsonTemplate.FirstNames)} {(botJsonTemplate.LastNames.Any() ? randomUtil.GetArrayValue(botJsonTemplate.LastNames) : "")}";
 
             name = name.Trim();

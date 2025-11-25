@@ -17,8 +17,8 @@ public class BtrDeliveryCallbacks(
     ISptLogger<BtrDeliveryCallbacks> logger,
     BtrDeliveryService btrDeliveryService,
     TimeUtil timeUtil,
-    SaveServer saveServer,
-    BtrDeliveryConfig btrDeliveryConfig
+    BtrDeliveryConfig btrDeliveryConfig,
+    SaveServer saveServer
 ) : IOnUpdate
 {
     public Task<bool> OnUpdate(CancellationToken stoppingToken, long secondsSinceLastRun)

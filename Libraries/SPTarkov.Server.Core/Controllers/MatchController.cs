@@ -12,22 +12,20 @@ namespace SPTarkov.Server.Core.Controllers;
 [Injectable]
 public class MatchController(
     MatchLocationService matchLocationService,
-    ConfigServer configServer,
+    MatchConfig matchConfig,
+    PmcConfig pmcConfig,
     LocationLifecycleService locationLifecycleService,
     ProfileActivityService profileActivityService,
     WeatherHelper weatherHelper
 )
 {
-    protected readonly MatchConfig MatchConfig = configServer.GetConfig<MatchConfig>();
-    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
-
     /// <summary>
     ///     Handle client/match/available
     /// </summary>
     /// <returns>True if server should be available</returns>
     public bool GetEnabled()
     {
-        return MatchConfig.Enabled;
+        return matchConfig.Enabled;
     }
 
     /// <summary>
@@ -100,9 +98,9 @@ public class MatchController(
         // TODO: add code to strip PMC of equipment now they've started the raid
 
         // Set pmcs to difficulty set in pre-raid screen if override in bot config isnt enabled
-        if (!PMCConfig.UseDifficultyOverride)
+        if (!pmcConfig.UseDifficultyOverride)
         {
-            PMCConfig.Difficulty = ConvertDifficultyDropdownIntoBotDifficulty(request.WavesSettings.BotDifficulty.ToString());
+            pmcConfig.Difficulty = ConvertDifficultyDropdownIntoBotDifficulty(request.WavesSettings.BotDifficulty.ToString());
         }
     }
 

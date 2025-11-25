@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Models.Eft.Match;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
@@ -33,7 +33,8 @@ public class BotInventoryGenerator(
     BotEquipmentModPoolService botEquipmentModPoolService,
     BotEquipmentModGenerator botEquipmentModGenerator,
     BotInventoryContainerService botInventoryContainerService,
-    ConfigServer configServer
+    BotConfig botConfig,
+    PmcConfig pmcConfig
 )
 {
     // Slots handled individually inside `GenerateAndAddEquipmentToBot`
@@ -58,9 +59,6 @@ public class BotInventoryGenerator(
         EquipmentSlots.Headwear,
         EquipmentSlots.Earpiece,
     ];
-
-    protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
-    protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
 
     private readonly FrozenSet<string> _slotsToCheck = [nameof(EquipmentSlots.Pockets), nameof(EquipmentSlots.SecuredContainer)];
 
@@ -171,7 +169,7 @@ public class BotInventoryGenerator(
     )
     {
         if (
-            !BotConfig.Equipment.TryGetValue(
+            !botConfig.Equipment.TryGetValue(
                 botGeneratorHelper.GetBotEquipmentRole(botGenerationDetails.RoleLowercase),
                 out var botEquipConfig
             )
@@ -202,14 +200,14 @@ public class BotInventoryGenerator(
         }
 
         // Is PMC + generating armband + armband forcing is enabled
-        if (PMCConfig.ForceArmband.Enabled && botGenerationDetails.IsPmc)
+        if (pmcConfig.ForceArmband.Enabled && botGenerationDetails.IsPmc)
         {
             // Replace armband pool with single tpl from config
             if (templateInventory.Equipment.TryGetValue(EquipmentSlots.ArmBand, out var armbands))
             {
                 // Get tpl based on pmc side
                 var armbandTpl =
-                    botGenerationDetails.RoleLowercase == "pmcusec" ? PMCConfig.ForceArmband.Usec : PMCConfig.ForceArmband.Bear;
+                    botGenerationDetails.RoleLowercase == "pmcusec" ? pmcConfig.ForceArmband.Usec : pmcConfig.ForceArmband.Bear;
 
                 armbands.Clear();
                 armbands.Add(armbandTpl, 1);
@@ -582,7 +580,7 @@ public class BotInventoryGenerator(
 
             // Edge case: Filter the armor items mod pool if bot exists in config dict + config has armor slot
             if (
-                BotConfig.Equipment.ContainsKey(settings.BotData.EquipmentRole)
+                botConfig.Equipment.ContainsKey(settings.BotData.EquipmentRole)
                 && settings.RandomisationDetails?.RandomisedArmorSlots != null
                 && settings.RandomisationDetails.RandomisedArmorSlots.Contains(settings.RootEquipmentSlot.ToString())
             )

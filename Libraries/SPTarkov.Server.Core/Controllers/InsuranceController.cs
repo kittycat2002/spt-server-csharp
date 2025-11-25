@@ -1,3 +1,4 @@
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers;
@@ -9,7 +10,6 @@ using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -37,12 +37,10 @@ public class InsuranceController(
     RagfairPriceService ragfairPriceService,
     ServerLocalisationService serverLocalisationService,
     SaveServer saveServer,
-    ConfigServer configServer,
+    InsuranceConfig insuranceConfig,
     ICloner cloner
 )
 {
-    protected readonly InsuranceConfig InsuranceConfig = configServer.GetConfig<InsuranceConfig>();
-
     /// <summary>
     ///     Process insurance items of all profiles prior to being given back to the player through the mail service
     /// </summary>
@@ -130,7 +128,7 @@ public class InsuranceController(
             // Update the insured items to have the new root parent ID for root/orphaned items
             insured.Items = insured.Items.AdoptOrphanedItems(rootItemParentId);
 
-            var simulateItemsBeingTaken = InsuranceConfig.SimulateItemsBeingTaken;
+            var simulateItemsBeingTaken = insuranceConfig.SimulateItemsBeingTaken;
             if (simulateItemsBeingTaken)
             {
                 // Find items that could be taken by another player off the players body
@@ -556,14 +554,14 @@ public class InsuranceController(
     {
         const int removeCount = 0;
 
-        if (randomUtil.GetChance100(InsuranceConfig.ChanceNoAttachmentsTakenPercent))
+        if (randomUtil.GetChance100(insuranceConfig.ChanceNoAttachmentsTakenPercent))
         {
             return removeCount;
         }
 
         // Get attachments count above or equal to price set in config
         return weightedAttachmentByPrice
-            .Where(attachment => attachment.Value >= InsuranceConfig.MinAttachmentRoublePriceToBeTaken)
+            .Where(attachment => attachment.Value >= insuranceConfig.MinAttachmentRoublePriceToBeTaken)
             .Count(_ => RollForDelete(traderId) ?? false);
     }
 
@@ -699,7 +697,7 @@ public class InsuranceController(
         const int conversionFactor = 100;
 
         var returnChance = randomUtil.GetInt(0, maxRoll) / conversionFactor;
-        var traderReturnChance = InsuranceConfig.ReturnChancePercent[traderId];
+        var traderReturnChance = insuranceConfig.ReturnChancePercent[traderId];
         var roll = returnChance >= traderReturnChance;
 
         // Log the roll with as much detail as possible.

@@ -40,11 +40,10 @@ public class CircleOfCultistService(
     ItemFilterService itemFilterService,
     SeasonalEventService seasonalEventService,
     ServerLocalisationService localisationService,
-    ConfigServer configServer
+    HideoutConfig hideoutConfig
 )
 {
     protected const string CircleOfCultistSlotId = "CircleOfCultistsGrid1";
-    protected readonly HideoutConfig HideoutConfig = configServer.GetConfig<HideoutConfig>();
 
     /// <summary>
     ///     Start a sacrifice event
@@ -78,18 +77,18 @@ public class CircleOfCultistService(
         var sacrificedItems = GetSacrificedItems(pmcData);
         var sacrificedItemCostRoubles = sacrificedItems.Aggregate(0D, (sum, curr) => sum + (itemHelper.GetItemPrice(curr.Template) ?? 0));
 
-        var rewardAmountMultiplier = GetRewardAmountMultiplier(pmcData, HideoutConfig.CultistCircle);
+        var rewardAmountMultiplier = GetRewardAmountMultiplier(pmcData, hideoutConfig.CultistCircle);
 
         // Get the rouble amount we generate rewards with from cost of sacrificed items * above multiplier
         var rewardAmountRoubles = Math.Round(sacrificedItemCostRoubles * rewardAmountMultiplier);
 
         // Check if it matches any direct swap recipes
-        var directRewardsCache = GenerateSacrificedItemsCache(HideoutConfig.CultistCircle.DirectRewards);
+        var directRewardsCache = GenerateSacrificedItemsCache(hideoutConfig.CultistCircle.DirectRewards);
         var directRewardSettings = CheckForDirectReward(sessionId, sacrificedItems, directRewardsCache);
         var hasDirectReward = directRewardSettings?.Reward.Count > 0;
 
         // Get craft time and bonus status
-        var craftingInfo = GetCircleCraftingInfo(rewardAmountRoubles, HideoutConfig.CultistCircle, directRewardSettings);
+        var craftingInfo = GetCircleCraftingInfo(rewardAmountRoubles, hideoutConfig.CultistCircle, directRewardSettings);
 
         // Create production in pmc profile
         RegisterCircleOfCultistProduction(sessionId, pmcData, cultistCraftData.Id, sacrificedItems, craftingInfo.Time);
@@ -106,10 +105,10 @@ public class CircleOfCultistService(
         var rewards = hasDirectReward
             ? GetDirectRewards(sessionId, directRewardSettings, cultistCircleStashId.Value)
             : GetRewardsWithinBudget(
-                GetCultistCircleRewardPool(sessionId, pmcData, craftingInfo, HideoutConfig.CultistCircle),
+                GetCultistCircleRewardPool(sessionId, pmcData, craftingInfo, hideoutConfig.CultistCircle),
                 rewardAmountRoubles,
                 cultistCircleStashId.Value,
-                HideoutConfig.CultistCircle
+                hideoutConfig.CultistCircle
             );
 
         // Get the container grid for cultist stash area
@@ -532,7 +531,7 @@ public class CircleOfCultistService(
         }
 
         // Look for parent in dict
-        var settings = HideoutConfig.CultistCircle.DirectRewardStackSize.GetValueOrDefault(itemDetails.Value.Parent);
+        var settings = hideoutConfig.CultistCircle.DirectRewardStackSize.GetValueOrDefault(itemDetails.Value.Parent);
         if (settings is null)
         {
             return 1;
@@ -577,7 +576,7 @@ public class CircleOfCultistService(
         if (itemHelper.IsOfBaseclass(itemTpl, BaseClasses.MONEY))
         {
             // Get currency-specific values from config
-            var settings = HideoutConfig.CultistCircle.CurrencyRewards[itemTpl];
+            var settings = hideoutConfig.CultistCircle.CurrencyRewards[itemTpl];
 
             // What % of the pool remaining should be rewarded as chosen currency
             var percentOfPoolToUse = randomUtil.GetDouble(settings.Min, settings.Max);
@@ -789,7 +788,7 @@ public class CircleOfCultistService(
         var currentItemCount = 0;
         var attempts = 0;
         // `currentItemCount` var will look for the correct number of items, `attempts` var will keep this from never stopping if the highValueThreshold is too high
-        while (currentItemCount < HideoutConfig.CultistCircle.MaxRewardItemCount + 2 && attempts < allItems.Count)
+        while (currentItemCount < hideoutConfig.CultistCircle.MaxRewardItemCount + 2 && attempts < allItems.Count)
         {
             attempts++;
             var randomItem = randomUtil.GetArrayValue(allItems);
@@ -802,7 +801,7 @@ public class CircleOfCultistService(
             if (itemsShouldBeHighValue)
             {
                 var itemValue = itemHelper.GetItemMaxPrice(randomItem.Key);
-                if (itemValue < HideoutConfig.CultistCircle.HighValueThresholdRub)
+                if (itemValue < hideoutConfig.CultistCircle.HighValueThresholdRub)
                 {
                     continue;
                 }
