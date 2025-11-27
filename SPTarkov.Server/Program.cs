@@ -67,8 +67,12 @@ public static class Program
             if (e.Message.Contains("could not load file or assembly", StringComparison.InvariantCultureIgnoreCase))
             {
                 EarlyLogger!.LogCritical(
+                    e,
                     "You may have forgotten to install a requirement for one of your mods, please check the mod page again and install any requirements listed. Read the error message below CAREFULLY for the name of the mod you need to install"
                 );
+
+                // Don't show below error message when it's a mod exception.
+                return;
             }
 
             EarlyLogger!.LogCritical(
