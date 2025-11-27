@@ -52,7 +52,7 @@ public static class Program
                 Console.WriteLine(
                     "You may have forgotten to install a requirement for one of your mods, please check the mod page again and install any dependencies listed. Read the below error message CAREFULLY to find the name of the mod you need to install"
                 );
-                
+
                 Console.ResetColor();
                 Console.WriteLine(e);
                 Console.WriteLine(
