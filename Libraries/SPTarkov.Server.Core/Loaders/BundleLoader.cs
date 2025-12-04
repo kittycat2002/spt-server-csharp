@@ -65,6 +65,8 @@ public class BundleLoader(ISptLogger<BundleLoader> logger, JsonUtil jsonUtil, Bu
 
             AddBundle(bundleManifest.Key, new BundleInfo(relativeModPath, bundleManifest, bundleHash));
         }
+
+        await bundleHashCacheService.WriteCache();
     }
 
     /// <summary>
