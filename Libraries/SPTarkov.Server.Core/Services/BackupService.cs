@@ -30,6 +30,16 @@ public class BackupService
     protected readonly TimeUtil TimeUtil;
     protected readonly IReadOnlyList<SptMod> LoadedMods;
 
+    private static readonly CultureInfo[] Cultures =
+    [
+        CultureInfo.InvariantCulture,
+        new CultureInfo("fa-IR") { DateTimeFormat = { Calendar = new PersianCalendar() } },
+        new CultureInfo("ar-SA") { DateTimeFormat = { Calendar = new HijriCalendar() } },
+        new CultureInfo("he-IL") { DateTimeFormat = { Calendar = new HebrewCalendar() } },
+        new CultureInfo("th-TH") { DateTimeFormat = { Calendar = new ThaiBuddhistCalendar() } },
+        new CultureInfo("ja-JP") { DateTimeFormat = { Calendar = new JapaneseCalendar() } },
+    ];
+
     public BackupService(
         ISptLogger<BackupService> logger,
         IReadOnlyList<SptMod> loadedMods,
@@ -233,9 +243,9 @@ public class BackupService
         }
     }
 
-    protected SortedDictionary<long, string> GetBackupPathsWithCreationTimestamp(IEnumerable<string> backupPaths)
+    protected SortedDictionary<DateTime, string> GetBackupPathsWithCreationTimestamp(IEnumerable<string> backupPaths)
     {
-        var result = new SortedDictionary<long, string>();
+        var result = new SortedDictionary<DateTime, string>();
         foreach (var backupPath in backupPaths)
         {
             var date = ExtractDateFromFolderName(backupPath);
@@ -244,7 +254,7 @@ public class BackupService
                 continue;
             }
 
-            result.Add(date.Value.ToFileTimeUtc(), backupPath);
+            result.Add(date.Value, backupPath);
         }
 
         return result;
@@ -297,7 +307,7 @@ public class BackupService
             return 0; // Skip comparison if either date is invalid.
         }
 
-        return (int)(dateA.Value.ToFileTimeUtc() - dateB.Value.ToFileTimeUtc());
+        return dateA.Value.CompareTo(dateB.Value);
     }
 
     /// <summary>
@@ -308,11 +318,29 @@ public class BackupService
     protected DateTime? ExtractDateFromFolderName(string folderPath)
     {
         var folderName = Path.GetFileName(folderPath);
-
         const string format = "yyyy-MM-dd_HH-mm-ss";
-        if (DateTime.TryParseExact(folderName, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTime))
+
+        var now = DateTime.UtcNow;
+        var minDate = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var maxDate = now.AddYears(5);
+
+        foreach (var culture in Cultures)
         {
-            return dateTime;
+            if (
+                DateTime.TryParseExact(
+                    folderName,
+                    format,
+                    culture,
+                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                    out var dt
+                )
+            )
+            {
+                if (dt >= minDate && dt <= maxDate)
+                {
+                    return DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                }
+            }
         }
 
         Logger.Warning($"Invalid backup folder name format: {folderPath}, [{folderName}]");
