@@ -55,6 +55,11 @@ public class DatabaseImporter(
 
             var bsgPath = $"/{newBasePath}/{filePathNoExtension}".Replace("\\", "/");
             imageRouter.AddRoute(bsgPath, fileNameWithPath);
+
+            if (fileNameWithNoSPTPath.Contains("icon.ico"))
+            {
+                imageRouter.AddRoute("/favicon", fileNameWithPath);
+            }
         }
     }
 
