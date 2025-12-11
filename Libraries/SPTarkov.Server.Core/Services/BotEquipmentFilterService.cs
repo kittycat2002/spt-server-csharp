@@ -281,17 +281,13 @@ public class BotEquipmentFilterService(
                     continue;
                 }
 
-                // Loop over each cartridge + weight
-                // Clear all cartridges ready for whitelist to be added
-                var cartridgeIdsToCheck = cartridges.Keys.ToList() ?? [];
-                foreach (var cartridgeId in cartridgeIdsToCheck)
-                // Cartridge not on whitelist
+                // Get all cartridges that aren't on the whitelist
+                var cartridgesToRemove = cartridges.Keys.Where(cartridge => !matchingWhitelist.Contains(cartridge)).ToList();
+
+                // Remove said cartridges from the original dictionary
+                foreach (var cartridge in cartridgesToRemove)
                 {
-                    if (!matchingWhitelist?.Contains(cartridgeId) ?? false)
-                    // Remove
-                    {
-                        cartridges.Remove(cartridgeId);
-                    }
+                    cartridges.Remove(cartridge);
                 }
             }
 
