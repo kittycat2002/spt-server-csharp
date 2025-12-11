@@ -1,4 +1,5 @@
 using SPTarkov.Common.Extensions;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -6,7 +7,6 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Common.Models.Logging;
 using SPTarkov.Server.Core.Servers;
 using LogLevel = SPTarkov.Common.Models.Logging.LogLevel;
 
@@ -283,13 +283,14 @@ public class BotEquipmentFilterService(
 
                 // Loop over each cartridge + weight
                 // Clear all cartridges ready for whitelist to be added
-                foreach (var ammoKvP in cartridges)
+                var cartridgeIdsToCheck = cartridges.Keys.ToList() ?? [];
+                foreach (var cartridgeId in cartridgeIdsToCheck)
                 // Cartridge not on whitelist
                 {
-                    if (!matchingWhitelist?.Contains(ammoKvP.Key) ?? false)
+                    if (!matchingWhitelist?.Contains(cartridgeId) ?? false)
                     // Remove
                     {
-                        cartridges.Remove(ammoKvP.Key);
+                        cartridges.Remove(cartridgeId);
                     }
                 }
             }
