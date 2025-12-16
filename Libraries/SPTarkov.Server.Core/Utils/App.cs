@@ -21,6 +21,7 @@ public class App(
     DatabaseService databaseService,
     IHostApplicationLifetime appLifeTime,
     IEnumerable<IOnLoad> onLoadComponents,
+    OnLoadUtil onLoadUtil,
     IEnumerable<IOnUpdate> onUpdateComponents
 )
 {
@@ -57,10 +58,35 @@ public class App(
         }
 
         // execute onLoad callbacks
+        onLoadUtil.Initialize(onLoadComponents);
         logger.Info(serverLocalisationService.GetText("executing_startup_callbacks"));
-        foreach (var onLoad in onLoadComponents)
+        foreach (var onLoadObject in onLoadUtil.OnLoadDictionaryInt.OnLoadEnumerable())
         {
-            await onLoad.OnLoad();
+            switch (onLoadObject)
+            {
+                case IOnLoad onLoad:
+                    {
+                        await onLoad.OnLoad();
+                        break;
+                    }
+                case Delegate onLoadDelegate when onLoadDelegate.Method.ReturnType == typeof(Task):
+                    {
+                        var parameters = onLoadDelegate.Method.GetParameters()
+                            .Select(parameter => serviceProvider.GetService(parameter.ParameterType)).ToArray();
+                        await (Task)onLoadDelegate.DynamicInvoke(parameters)!;
+                        break;
+                    }
+                case Delegate onLoadDelegate:
+                    {
+                        logger.Error($"Failed to load: \"{onLoadDelegate}\" dynamic OnLoad, does not return \"Task\".");
+                        break;
+                    }
+                default:
+                    {
+                        logger.Error($"Failed to load: \"{onLoadObject}\" dynamic OnLoad, is not a delegate.");
+                        break;
+                    }
+            }
         }
 
         // Discard here, as this task will run indefinitely
