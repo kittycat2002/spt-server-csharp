@@ -1820,10 +1820,13 @@ public class BotEquipmentModGenerator(
                     scopeSlot?.All(slot =>
                         slot.Properties.Filters.FirstOrDefault()
                             .Filter.All(tpl =>
-                                itemHelper.IsOfBaseclasses(tpl, whitelistedSightTypes) || itemHelper.IsOfBaseclass(tpl, BaseClasses.MOUNT)
+                                itemHelper.IsItemInDb(tpl)
+                                && (
+                                    itemHelper.IsOfBaseclasses(tpl, whitelistedSightTypes)
+                                    || itemHelper.IsOfBaseclass(tpl, BaseClasses.MOUNT)
+                                )
                             )
-                    )
-                    ?? false
+                    ) ?? false
                 )
                 // Add mod to allowed list
                 {
