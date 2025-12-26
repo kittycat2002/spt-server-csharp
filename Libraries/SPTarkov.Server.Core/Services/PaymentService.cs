@@ -363,7 +363,10 @@ public class PaymentService(
         var itemsInStashCache = GetItemInStashCache(pmcData.Inventory.Items, playerStashId);
 
         // Filter out 'Locked' money stacks as they cannot be used
-        var noLocked = moneyItemsInInventory.Where(moneyItem => moneyItem.Upd.PinLockState != PinLockState.Locked);
+        var noLocked = moneyItemsInInventory.Where(moneyItem =>
+            moneyItem.Upd is not null && moneyItem.Upd.PinLockState != PinLockState.Locked
+        );
+
         if (noLocked.Any())
         {
             // We found unlocked money
