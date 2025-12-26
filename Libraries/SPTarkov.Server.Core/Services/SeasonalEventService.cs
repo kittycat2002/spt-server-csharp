@@ -541,6 +541,36 @@ public class SeasonalEventService(
                     return staticlootData;
                 });
             }
+
+            // Raise the chance on christmas related spawns ever so slightly
+            if (location.Value.LooseLoot is not null)
+            {
+                const double christmasLootBoost = 0.03;
+
+                location.Value.LooseLoot.AddTransformer(looselootData =>
+                {
+                    if (looselootData?.Spawnpoints is null)
+                    {
+                        return looselootData;
+                    }
+
+                    foreach (var looselootSpawnpoints in looselootData.Spawnpoints)
+                    {
+                        if (looselootSpawnpoints.Template is null || looselootSpawnpoints.Template.Id is null)
+                        {
+                            continue;
+                        }
+
+                        if (looselootSpawnpoints.Template.Id.Contains("christmas", StringComparison.OrdinalIgnoreCase))
+                        {
+                            var probability = looselootSpawnpoints.Probability ?? 0.0;
+                            looselootSpawnpoints.Probability = Math.Min(1.0, probability + (1.0 - probability) * christmasLootBoost);
+                        }
+                    }
+
+                    return looselootData;
+                });
+            }
         }
 
         ChangeBtrToTarColaSkin();
