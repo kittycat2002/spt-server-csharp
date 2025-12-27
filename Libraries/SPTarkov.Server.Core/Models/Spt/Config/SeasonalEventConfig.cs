@@ -47,6 +47,9 @@ public record SeasonalEventConfig : BaseConfig
     [JsonPropertyName("hostilitySettingsForEvent")]
     public required Dictionary<string, Dictionary<string, List<AdditionalHostilitySettings>>> HostilitySettingsForEvent { get; set; }
 
+    [JsonPropertyName("khorovodEventTransitWhitelist")]
+    public required Dictionary<string, List<int>> KhorovodEventTransitWhitelist { get; set; }
+
     /// <summary>
     ///     Ids of containers on locations that only have Christmas loot
     /// </summary>
@@ -143,6 +146,12 @@ public record SeasonalEventSettings
 
     [JsonPropertyName("enableRundansEvent")]
     public bool? EnableRundansEvent { get; set; }
+
+    [JsonPropertyName("enableKhorvodEvent")]
+    public bool? EnableKhorvodEvent { get; set; }
+
+    [JsonPropertyName("christmasLootBoostAmount")]
+    public double? ChristmasLootBoostAmount { get; set; }
 }
 
 public record ZombieSettings

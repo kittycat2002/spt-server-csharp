@@ -42,6 +42,13 @@ public class App(
             logger.Debug($"OS: {Environment.OSVersion.Version} | {Environment.OSVersion.Platform}");
             logger.Debug($"Pagefile: {pageFileGb:F2} GB");
             logger.Debug($"RAM: {totalMemoryGb:F2} GB");
+            if (totalMemoryGb < 30)
+            {
+                logger.Warning(
+                    $"Detected RAM ({totalMemoryGb:F2}GB) is smaller than recommended (32GB) you may experience crashes or reduced FPS on large maps"
+                );
+            }
+
             logger.Debug($"Ran as admin: {Environment.IsPrivilegedProcess}");
             logger.Debug($"CPU cores: {Environment.ProcessorCount}");
             logger.Debug($"PATH: {(Environment.ProcessPath ?? "null returned").Encode(EncodeType.BASE64)}");

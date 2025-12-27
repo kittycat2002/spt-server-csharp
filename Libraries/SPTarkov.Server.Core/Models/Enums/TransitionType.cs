@@ -1,5 +1,6 @@
 ﻿namespace SPTarkov.Server.Core.Models.Enums;
 
+[Flags]
 public enum TransitionType
 {
     NONE = 0,

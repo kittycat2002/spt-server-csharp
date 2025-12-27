@@ -58,6 +58,7 @@ public class LocationLifecycleService(
     protected readonly PmcConfig PMCConfig = configServer.GetConfig<PmcConfig>();
     protected readonly BotConfig BotConfig = configServer.GetConfig<BotConfig>();
     protected readonly LostOnDeathConfig LostOnDeathConfig = configServer.GetConfig<LostOnDeathConfig>();
+    protected readonly SeasonalEventConfig SeasonalEventConfig = configServer.GetConfig<SeasonalEventConfig>();
 
     protected const string Pmc = "pmc";
     protected const string Savage = "savage";
@@ -93,9 +94,61 @@ public class LocationLifecycleService(
                 : playerProfile.CharacterData.ScavData.Skills.Common
         );
 
+        var transitionType = TransitionType.NONE;
+
+        if (request.TransitionType is TransitionType flags)
+        {
+            if (flags.HasFlag(TransitionType.COMMON))
+            {
+                transitionType = TransitionType.COMMON;
+            }
+
+            if (flags.HasFlag(TransitionType.EVENT))
+            {
+                transitionType = TransitionType.EVENT;
+            }
+        }
+
         // Raid is starting, adjust run times to reduce server load while player is in raid
         RagfairConfig.RunIntervalSeconds = RagfairConfig.RunIntervalValues.InRaid;
         HideoutConfig.RunIntervalSeconds = HideoutConfig.RunIntervalValues.InRaid;
+
+        var location = GenerateLocationAndLoot(sessionId, request.Location, !request.ShouldSkipLootGeneration ?? true);
+        var isRundansActive = databaseService.GetGlobals().Configuration.RunddansSettings.Active;
+
+        if (transitionType == TransitionType.EVENT)
+        {
+            // Handle Runddans / Khorovod event
+            if (isRundansActive && location.Transits is not null)
+            {
+                // Get whitelist for maps transits, event should have 1 only
+                var matchingTransitWhitelist = SeasonalEventConfig.KhorovodEventTransitWhitelist.GetValueOrDefault(
+                    location.Id.ToLowerInvariant(),
+                    []
+                );
+
+                foreach (var transits in location.Transits)
+                {
+                    if (transits.Id is null)
+                    {
+                        continue;
+                    }
+
+                    // ActivateAfterSeconds sets the timer on the generator, events is needed because it is checked again in the client
+                    // To enable certain stuff for the Khorovod event
+                    if (matchingTransitWhitelist.Contains(transits.Id.Value))
+                    {
+                        transits.ActivateAfterSeconds = 300;
+                        transits.Events = true;
+                    }
+                    else
+                    {
+                        // Disable the other transits in this event, people are only allowed to transit to certain points
+                        transits.IsActive = false;
+                    }
+                }
+            }
+        }
 
         var result = new StartLocalRaidResponseData
         {
@@ -103,11 +156,11 @@ public class LocationLifecycleService(
             ServerId = $"{request.Location}.{request.PlayerSide} {timeUtil.GetTimeStamp()}", // Only used for metrics in client
             ServerSettings = databaseService.GetLocationServices(), // TODO - is this per map or global?
             Profile = new ProfileInsuredItems { InsuredItems = playerProfile.CharacterData.PmcData.InsuredItems },
-            LocationLoot = GenerateLocationAndLoot(sessionId, request.Location, !request.ShouldSkipLootGeneration ?? true),
-            TransitionType = TransitionType.NONE,
+            LocationLoot = location,
+            TransitionType = transitionType,
             Transition = new Transition
             {
-                TransitionType = TransitionType.NONE,
+                TransitionType = transitionType,
                 TransitionRaidId = new MongoId(),
                 TransitionCount = 0,
                 VisitedLocations = [],
@@ -128,7 +181,7 @@ public class LocationLifecycleService(
         if (transitionData is not null)
         {
             logger.Success($"Player: {sessionId} is in transit to {request.Location}");
-            result.Transition.TransitionType = TransitionType.COMMON;
+            result.Transition.TransitionType = transitionType;
             result.Transition.TransitionRaidId = transitionData.TransitionRaidId;
             result.Transition.TransitionCount += 1;
 

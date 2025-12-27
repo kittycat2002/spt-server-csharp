@@ -66,7 +66,7 @@ public class CustomItemService(
 
         AddToFleaPriceDb(newItemId, newItemDetails.FleaPriceRoubles);
 
-        itemBaseClassService.HydrateItemBaseClassCache();
+        itemBaseClassService.AddItemToCache(newItemId);
 
         if (itemHelper.IsOfBaseclass(itemClone.Id, BaseClasses.WEAPON))
         {
@@ -112,7 +112,7 @@ public class CustomItemService(
 
         AddToFleaPriceDb(newItem.Id, newItemDetails.FleaPriceRoubles);
 
-        itemBaseClassService.HydrateItemBaseClassCache();
+        itemBaseClassService.AddItemToCache(newItem.Id);
 
         if (itemHelper.IsOfBaseclass(newItem.Id, BaseClasses.WEAPON))
         {

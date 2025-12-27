@@ -16,12 +16,11 @@ public class ItemBaseClassService(
     ServerLocalisationService serverLocalisationService
 )
 {
-    private bool _cacheGenerated;
-
     /// <summary>
     /// Key = Item tpl, values = Ids of its parents
     /// </summary>
     private Dictionary<MongoId, HashSet<MongoId>> _itemBaseClassesCache = [];
+    private readonly Lock _itemBaseClassesLock = new();
     private readonly HashSet<MongoId> _rootNodeIds = [];
 
     /// <summary>
@@ -36,23 +35,32 @@ public class ItemBaseClassService(
         var items = databaseService.GetItems();
         foreach (var item in items)
         {
-            if (string.Equals(item.Value.Type, "Item", StringComparison.OrdinalIgnoreCase))
-            {
-                var itemIdToUpdate = item.Value.Id;
-                if (!_itemBaseClassesCache.ContainsKey(item.Value.Id))
-                {
-                    _itemBaseClassesCache[item.Value.Id] = [];
-                }
+            AddItemToCache(item.Key);
+        }
+    }
 
-                AddBaseItems(itemIdToUpdate, item.Value);
+    public void AddItemToCache(MongoId itemTpl)
+    {
+        var itemDb = databaseService.GetItems();
+
+        if (!itemDb.TryGetValue(itemTpl, out var item))
+        {
+            logger.Error($"Could not add {itemTpl} to cache, it does not exist in the item database!");
+            return;
+        }
+
+        lock (_itemBaseClassesLock)
+        {
+            if (string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase))
+            {
+                _itemBaseClassesCache.TryAdd(item.Id, []);
+                AddBaseItems(item.Id, item);
             }
             else
             {
-                _rootNodeIds.Add(item.Key);
+                _rootNodeIds.Add(item.Id);
             }
         }
-
-        _cacheGenerated = true;
     }
 
     /// <summary>
@@ -79,11 +87,6 @@ public class ItemBaseClassService(
     /// <returns> true if item inherits from base class passed in </returns>
     public bool ItemHasBaseClass(MongoId itemTpl, IEnumerable<MongoId> baseClasses)
     {
-        if (!_cacheGenerated)
-        {
-            HydrateItemBaseClassCache();
-        }
-
         if (itemTpl.IsEmpty)
         {
             logger.Warning("Unable to check itemTpl base class as value passed is null");
@@ -101,14 +104,8 @@ public class ItemBaseClassService(
         var existsInCache = _itemBaseClassesCache.TryGetValue(itemTpl, out var baseClassList);
         if (!existsInCache)
         {
-            // Not found
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(serverLocalisationService.GetText("baseclass-item_not_found", itemTpl.ToString()));
-            }
-
-            // Not found in cache, Hydrate again - some mods add items late in server startup lifecycle
-            HydrateItemBaseClassCache();
+            // Not found in cache, attempt to add first
+            AddItemToCache(itemTpl);
 
             existsInCache = _itemBaseClassesCache.TryGetValue(itemTpl, out baseClassList);
         }
@@ -131,11 +128,6 @@ public class ItemBaseClassService(
     /// <returns> true if item inherits from base class passed in </returns>
     public bool ItemHasBaseClass(MongoId itemTpl, MongoId baseClasses)
     {
-        if (!_cacheGenerated)
-        {
-            HydrateItemBaseClassCache();
-        }
-
         if (itemTpl.IsEmpty)
         {
             logger.Warning("Unable to check itemTpl base class as value passed is null");
@@ -153,14 +145,8 @@ public class ItemBaseClassService(
         var existsInCache = _itemBaseClassesCache.TryGetValue(itemTpl, out var baseClassList);
         if (!existsInCache)
         {
-            // Not found
-            if (logger.IsLogEnabled(LogLevel.Debug))
-            {
-                logger.Debug(serverLocalisationService.GetText("baseclass-item_not_found", itemTpl.ToString()));
-            }
-
-            // Not found in cache, Hydrate again - some mods add items late in server startup lifecycle
-            HydrateItemBaseClassCache();
+            // Not found in cache, attempt to add first
+            AddItemToCache(itemTpl);
 
             existsInCache = _itemBaseClassesCache.TryGetValue(itemTpl, out baseClassList);
         }
@@ -182,11 +168,6 @@ public class ItemBaseClassService(
     /// <returns> array of base classes </returns>
     public HashSet<MongoId> GetItemBaseClasses(MongoId itemTpl)
     {
-        if (!_cacheGenerated)
-        {
-            HydrateItemBaseClassCache();
-        }
-
         if (!_itemBaseClassesCache.TryGetValue(itemTpl, out var value))
         {
             return [];

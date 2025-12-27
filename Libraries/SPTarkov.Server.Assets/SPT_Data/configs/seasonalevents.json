@@ -9869,12 +9869,14 @@
           "5df8a72c86f77412640e2e83": 2200,
           "5df8a77486f77412672a1e3f": 2200,
           "63a8970d7108f713591149f5": 250,
-          "675ea3d6312c0a5c4e04e317": 1500
+          "675ea3d6312c0a5c4e04e317": 1500,
+          "67586af7036d7f3da60c3612": 2000
         },
         "Pockets": {
           "5df8a6a186f77412640e2e80": 2200,
           "5df8a72c86f77412640e2e83": 2200,
-          "5df8a77486f77412672a1e3f": 2200
+          "5df8a77486f77412672a1e3f": 2200,
+          "67586af7036d7f3da60c3612": 2000
         },
         "TacticalVest": {
           "5df8a6a186f77412640e2e80": 2200,
@@ -9930,7 +9932,9 @@
         "adjustBotAppearances": true,
         "enableChristmasHideout": true,
         "enableSanta": true,
-        "enableRundansEvent": true
+        "enableRundansEvent": true,
+        "enableKhorvodEvent": true,
+        "christmasLootBoostAmount": 0.03
       },
       "startDay": "13",
       "startMonth": "12",
@@ -9944,6 +9948,7 @@
       "settings": {
         "adjustBotAppearances": true,
         "enableChristmasHideout": true,
+        "enableKhorvodEvent": true,
         "enableSanta": true
       },
       "startDay": "1",
@@ -13997,5 +14002,23 @@
         }
       ]
     }
+  },
+  "khorovodEventTransitWhitelist": {
+    "shoreline": [
+      24
+    ],
+    "lighthouse": [
+      22
+    ],
+    "rezervbase": [
+      19
+    ],
+    "woods": [
+      41
+    ],
+    "bigmap": [
+      11
+    ],
+    "interchange": []
   }
 }

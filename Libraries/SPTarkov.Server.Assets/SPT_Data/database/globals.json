@@ -35191,6 +35191,7 @@
       ],
       "active": false,
       "activePVE": false,
+      "initialFrozenDelaySec": 60,
       "applyFrozenEverySec": 1,
       "consumables": [
         "67586bee39b1b82b0d0f9d06"

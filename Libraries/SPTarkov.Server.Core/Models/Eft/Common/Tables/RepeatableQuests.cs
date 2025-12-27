@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 public record RepeatableQuest : Quest
 {
     [JsonPropertyName("changeCost")]
-    public List<ChangeCost?>? ChangeCost { get; set; }
+    public required List<ChangeCost> ChangeCost { get; set; }
 
     [JsonPropertyName("changeStandingCost")]
     public int? ChangeStandingCost { get; set; }
@@ -94,7 +94,7 @@ public record PmcDataRepeatableQuest
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("changeRequirement")]
-    public Dictionary<MongoId, ChangeRequirement?>? ChangeRequirement { get; set; }
+    public required Dictionary<MongoId, ChangeRequirement> ChangeRequirement { get; set; } = [];
 
     [JsonPropertyName("freeChanges")]
     public int? FreeChanges { get; set; }
@@ -106,10 +106,10 @@ public record PmcDataRepeatableQuest
 public record ChangeRequirement
 {
     [JsonPropertyName("changeCost")]
-    public List<ChangeCost?>? ChangeCost { get; set; }
+    public required List<ChangeCost> ChangeCost { get; set; } = [];
 
     [JsonPropertyName("changeStandingCost")]
-    public double? ChangeStandingCost { get; set; }
+    public required double ChangeStandingCost { get; set; }
 }
 
 public record ChangeCost

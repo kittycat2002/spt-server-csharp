@@ -648,6 +648,9 @@ public record RunddansSettings
     [JsonPropertyName("applyFrozenEverySec")]
     public double ApplyFrozenEverySec { get; set; }
 
+    [JsonPropertyName("initialFrozenDelaySec")]
+    public double InitialFrozenDelaySec { get; set; }
+
     [JsonPropertyName("consumables")]
     public IEnumerable<string> Consumables { get; set; }
 

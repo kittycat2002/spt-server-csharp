@@ -65,10 +65,10 @@ public record ArmorDurability
     public int MinLimitPercent { get; set; }
 
     [JsonPropertyName("lowestMaxPercent")]
-    public int LowestMaxPercent { get; set; }
+    public int? LowestMaxPercent { get; set; }
 
     [JsonPropertyName("highestMaxPercent")]
-    public int HighestMaxPercent { get; set; }
+    public int? HighestMaxPercent { get; set; }
 }
 
 public record WeaponDurability

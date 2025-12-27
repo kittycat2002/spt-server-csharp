@@ -607,7 +607,7 @@ public class RepeatableQuestController(
             fullProfile.SptData.FreeRepeatableRefreshUsedCount[repeatableTypeLower] = 0;
 
             // Create stupid redundant change requirements from quest data
-            generatedRepeatables.ChangeRequirement = new Dictionary<MongoId, ChangeRequirement?>();
+            generatedRepeatables.ChangeRequirement = [];
             foreach (var quest in generatedRepeatables.ActiveQuests)
             {
                 generatedRepeatables.ChangeRequirement.TryAdd(
@@ -707,6 +707,7 @@ public class RepeatableQuestController(
                 EndTime = 0,
                 FreeChanges = hasAccess ? repeatableConfig.FreeChanges : 0,
                 FreeChangesAvailable = hasAccess ? repeatableConfig.FreeChangesAvailable : 0,
+                ChangeRequirement = [],
             };
 
             // Add base object that holds repeatable data to profile
@@ -770,6 +771,14 @@ public class RepeatableQuestController(
     /// <returns>True if unlocked</returns>
     protected bool PlayerHasDailyScavQuestsUnlocked(PmcData pmcData)
     {
+        if (pmcData.TradersInfo.TryGetValue(Traders.FENCE, out var fence))
+        {
+            if (fence.Unlocked is not null && !fence.Unlocked.Value)
+            {
+                return false;
+            }
+        }
+
         return pmcData.Hideout?.Areas?.FirstOrDefault(hideoutArea => hideoutArea.Type == HideoutAreas.IntelligenceCenter)?.Level >= 1;
     }
 

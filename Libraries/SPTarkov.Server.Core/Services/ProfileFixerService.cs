@@ -539,33 +539,39 @@ public class ProfileFixerService(
         foreach (var profileArea in pmcProfile.Hideout?.Areas ?? [])
         {
             var areaType = profileArea.Type;
-            var level = profileArea.Level;
+            var currentLevel = profileArea.Level;
 
-            if (level.GetValueOrDefault(0) == 0)
+            if (currentLevel.GetValueOrDefault(0) == 0)
             {
                 continue;
             }
 
-            // Get array of hideout area upgrade levels to check for bonuses
+            // Create array of hideout area upgrade levels player has installed
             // Zero indexed
             var areaLevelsToCheck = new List<string>();
-            for (var index = 0; index < level + 1; index++)
-            // Stage key is saved as string in db
+            for (var index = 0; index < currentLevel + 1; index++)
             {
-                areaLevelsToCheck.Add(index.ToString());
+                areaLevelsToCheck.Add(index.ToString()); // Convert to string as hideout stage key is saved as string in db
             }
 
-            // Iterate over area levels, check for bonuses, add if needed
+            // Get hideout area data from db
             var dbArea = dbHideoutAreas?.FirstOrDefault(area => area.Type == areaType);
-            if (dbArea is null)
+            if (dbArea is null || dbArea.Stages is null)
             {
                 continue;
             }
 
+            // Check if profile is missing  any bonuses from each area level
             foreach (var areaLevel in areaLevelsToCheck)
             {
-                // Get areas level bonuses from db
-                var levelBonuses = dbArea.Stages?[areaLevel].Bonuses;
+                // Get areas level from db
+                if (!dbArea.Stages.TryGetValue(areaLevel, out var stage))
+                {
+                    continue;
+                }
+
+                // Get the bonuses for this upgrade stage
+                var levelBonuses = stage.Bonuses;
                 if (levelBonuses is null || levelBonuses.Count == 0)
                 {
                     continue;
@@ -578,8 +584,10 @@ public class ProfileFixerService(
                     var profileBonus = GetBonusFromProfile(pmcProfile.Bonuses, bonus);
                     if (profileBonus is null)
                     {
-                        // no bonus, add to profile
-                        logger.Debug($"Profile has level {level} area {profileArea.Type} but no bonus found, adding {bonus.Type}");
+                        // No bonus in profile, add it
+                        logger.Debug(
+                            $"Profile has level: {currentLevel} area: {profileArea.Type} but no bonus found, adding: {bonus.Type}"
+                        );
                         hideoutHelper.ApplyPlayerUpgradesBonus(pmcProfile, bonus);
                     }
                 }
