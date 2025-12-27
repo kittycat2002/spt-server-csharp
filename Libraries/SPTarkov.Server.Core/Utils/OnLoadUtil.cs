@@ -60,6 +60,7 @@ public class OnLoadUtil
                         }
 
                         _list = dictionary._dictionary.GetValueAtIndex(0)._list;
+                        _listSize = _list.Count;
                     }
                     else if (_list.Count != _listSize)
                     {
